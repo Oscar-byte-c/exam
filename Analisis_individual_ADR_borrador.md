@@ -142,9 +142,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Tablas relacionales + Row Level Security por rol y ámbito + vistas SQL para resultados** (Recomendada) | [Yo] | La seguridad se aplica en la base de datos para cualquier cliente. Las vistas `avance_por_recinto` y `resultados_por_candidato` alimentan el panel. Una tabla `acta_historial` (vía trigger) da trazabilidad. | Hay que escribir y probar bien las políticas RLS. |
-| Filtrar únicamente en la app | | Fácil. | **Inseguro**: no cumple RNF-01. Descartada. |
-| API propia (Edge Functions) para todas las operaciones | | Control total de la lógica. | Más código y más latencia; reinventa lo que RLS ya resuelve. |
+| **Tablas relacionales + Row Level Security por rol y ámbito + vistas SQL para resultados** (Recomendada) | Oscar Vásquez | La seguridad se aplica en la base de datos para cualquier cliente. Las vistas `avance_por_recinto` y `resultados_por_candidato` alimentan el panel. Una tabla `acta_historial` (vía trigger) da trazabilidad. | Hay que escribir y probar bien las políticas RLS. |
+| Filtrar únicamente en la app | Oscar Vásquez | Fácil. | **Inseguro**: no cumple RNF-01. Descartada. |
+| API propia (Edge Functions) para todas las operaciones | Oscar Vásquez | Control total de la lógica. | Más código y más latencia; reinventa lo que RLS ya resuelve. |
 
 **Decisión:** RLS + vistas + trigger de historial. La seguridad depende del servidor y no de la interfaz.
 **Consecuencias:** Tablas principales: `perfiles(rol, cedula UNIQUE, recinto_id)`, `recintos`, `mesas(veedor_id)`, `organizaciones`, `candidatos`, `actas(id UUID, mesa_id, dignidad, foto_url, lat, lng, precision, fecha)`, `acta_votos` y `acta_historial`. Restricción `UNIQUE(mesa_id, dignidad)` para impedir duplicados en la base de datos.
@@ -157,7 +157,7 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **SQLite (`expo-sqlite`) + fotos en el sistema de archivos (`expo-file-system`)** (Recomendada) | [Yo] | Datos estructurados con transacciones y consultas (por ejemplo, "actas pendientes"). La base guarda solo la ruta de la foto, no la imagen. | Hay que escribir el esquema local y el mapeo. |
+| **SQLite (`expo-sqlite`) + fotos en el sistema de archivos (`expo-file-system`)** (Recomendada) | Oscar Vásquez | Datos estructurados con transacciones y consultas (por ejemplo, "actas pendientes"). La base guarda solo la ruta de la foto, no la imagen. | Hay que escribir el esquema local y el mapeo. |
 | AsyncStorage | | Muy simple (clave‑valor). | Sin consultas ni transacciones; límite de tamaño en Android; no sirve para fotos. |
 | WatermelonDB | | Pensada para offline y trae un protocolo de sincronización. | Configuración nativa más compleja y curva de aprendizaje alta para el plazo disponible. |
 
