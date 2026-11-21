@@ -127,8 +127,8 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Alta por el superior con clave temporal → primer ingreso: verificación del correo con código OTP de 6 dígitos + cambio obligatorio de clave. Recuperación también con código OTP.** (Recomendada) | [Yo] | Coincide literalmente con el enunciado ("se lo entregue listo"). El código OTP es más fácil que un enlace para adultos mayores y no requiere *deep links* en el APK. | Requiere una Edge Function con `service_role` para crear usuarios y un indicador `debe_cambiar_clave` en el perfil. |
-| Invitación por correo (enlace mágico); el usuario define su clave | | El creador nunca conoce ninguna clave. | El enlace debe abrir la app (deep linking) y es más confuso para personas mayores. |
+| **Alta por el superior con clave temporal → primer ingreso: verificación del correo con código OTP de 6 dígitos + cambio obligatorio de clave. Recuperación también con código OTP.** (Recomendada) | Oscar Vásquez | Coincide literalmente con el enunciado ("se lo entregue listo"). El código OTP es más fácil que un enlace para adultos mayores y no requiere *deep links* en el APK. | Requiere una Edge Function con `service_role` para crear usuarios y un indicador `debe_cambiar_clave` en el perfil. |
+| Invitación por correo (enlace mágico); el usuario define su clave | Oscar Vásquez | El creador nunca conoce ninguna clave. | El enlace debe abrir la app (deep linking) y es más confuso para personas mayores. |
 | Auto‑registro con aprobación del superior | | Menos trabajo para los coordinadores. | **Contradice** el enunciado: ya falló antes por datos incompletos. Descartada. |
 
 **Decisión:** Clave temporal + OTP + cambio obligatorio. Resuelve las tres necesidades (correo verificado, clave privada, recuperación autónoma) con el flujo más simple para el usuario.
