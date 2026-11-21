@@ -240,16 +240,3 @@
 **Consecuencias:** Pedir los permisos con mensajes claros. Comprimir la foto (por ejemplo, ancho de ~1600 px y JPEG al 70 %) para que suba con mala señal. Mostrar una alerta si el acta se registró a más de ~500 m del recinto (S-07).
 
 ---
-
-## 4. Resumen para defender en la reunión (≈ 2 minutos)
-
-1. **Requerimientos:** identifiqué 21 RF y 10 RNF. Los más críticos son: **acceso sin auto‑registro con correo verificado y clave privada**, **actas validadas al momento con foto y GPS obligatorios**, **funcionamiento sin conexión sin duplicados**, **confidencialidad por rol aplicada en el servidor**, **panel en tiempo real** y **monitoreo automático de fallos**.
-2. **Backend, Supabase:** los datos son jerárquicos y hay que sumar votos por candidato y recinto; eso es SQL natural. **RLS** garantiza que un vendedor solo vea sus mesas aunque alguien intente acceder a la API directamente. *Si me dicen "Firebase tiene offline":* es cierto, pero las agregaciones y la seguridad jerárquica salen más caras, y el offline lo resolvemos con SQLite + outbox.
-3. **Accesos:** clave temporal creada por el superior, código OTP al correo en el primer ingreso (verifica el correo) y cambio obligatorio de clave. La recuperación también usa OTP. Un código es más fácil que un enlace para adultos mayores.
-4. **Offline y sincronización:** SQLite + cola de salida. **El UUID se genera en el celular** y se hace `upsert`, así que aunque la persona reintente diez veces queda **un solo registro**. Esto responde directamente al problema de duplicados del enunciado.
-5. **Arquitectura y estado:** Clean Architecture por capas. Las **validaciones del acta viven en `domain`**, por eso funcionan sin conexión y se prueban fácilmente. Zustand para la sesión y la sincronización, TanStack Query para los datos del servidor y los estados de carga y error.
-6. **Navegación:** React Navigation con un navegador por rol: un veedor ni siquiera tiene registradas las pantallas del coordinador.
-7. **Monitoreo:** Sentry captura cierres y errores no fatales, indica pantalla, dispositivo, versión de Android y usuarios afectados, y **envía después los reportes generados sin conexión**: cubre exactamente la sección *Estabilidad*.
-8. **Supuestos clave para acordar:** un veedor pertenece a un solo recinto; las correcciones se permiten toda la jornada con historial; el GPS es obligatorio pero la distancia solo genera alerta; "Exit Poll" se entiende como conteo rápido.
-
-**Puntos donde estoy dispuesto a ceder:** Expo Router frente a React Navigation, Redux frente a Zustand. **Puntos que defendería con firmeza:** seguridad en el servidor (RLS), UUID + `upsert` contra duplicados, y foto y GPS obligatorios.
