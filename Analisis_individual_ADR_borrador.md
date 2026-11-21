@@ -97,8 +97,8 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Capas globales: `domain` (entidades, casos de uso, interfaces de repositorio) / `data` (repositorios, fuentes remota y local) / `presentation` (pantallas, hooks, store) / `di`** (Recomendada) | Oscar Vásquez | Es el esquema clásico y fácil de mostrar en la defensa. Las validaciones del acta (RF-12) viven en `domain`, son funciones puras que se pueden probar y funcionan offline. | Las carpetas crecen a medida que se agregan funcionalidades. | Oscar Vásquez
-| Por funcionalidad (feature‑first), con capas dentro de cada una | | Escala mejor y agrupa por módulo (auth, actas, territorio). | Más carpetas; en un proyecto pequeño se duplica estructura. |
+| **Capas globales: `domain` (entidades, casos de uso, interfaces de repositorio) / `data` (repositorios, fuentes remota y local) / `presentation` (pantallas, hooks, store) / `di`** (Recomendada) | Oscar Vásquez | Es el esquema clásico y fácil de mostrar en la defensa. Las validaciones del acta (RF-12) viven en `domain`, son funciones puras que se pueden probar y funcionan offline. | Las carpetas crecen a medida que se agregan funcionalidades. |
+| Por funcionalidad (feature‑first), con capas dentro de cada una | Oscar Vásquez  | Escala mejor y agrupa por módulo (auth, actas, territorio). | Más carpetas; en un proyecto pequeño se duplica estructura. |
 | MVVM simple sin casos de uso | Oscar Vásquez | Más rápido de escribir. | **No cumple** Clean Architecture. Descartada. |
 
 **Decisión:** Capas globales con casos de uso explícitos (`RegistrarActa`, `CorregirActa`, `AsignarVeedor`…). La UI depende de interfaces y nunca de Supabase directamente.
@@ -113,8 +113,8 @@
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
 | **Supabase** (PostgreSQL + Auth + Storage + Realtime + Edge Functions) (Recomendada) | Oscar Vásquez | El modelo relacional encaja con la jerarquía. Las sumas por candidato son un `SUM … GROUP BY` o una vista SQL. **Row Level Security** para la confidencialidad. Auth incluye verificación por OTP y recuperación. Realtime para el panel. | No trae persistencia offline automática (hay que construirla, ver ADR-06/07). El plan gratuito pausa el proyecto si pasa días sin uso. |
-| Firebase (Firestore + Auth + Storage) | | Excelente caché offline incorporada. Crashlytics en el mismo ecosistema. Mucha documentación. | NoSQL: las agregaciones y las relaciones jerárquicas son más incómodas (desnormalizar, contadores). Las reglas de seguridad complejas son difíciles de mantener. |
-| Appwrite | | Open source, con auth, base de datos y storage. | SDK de React Native y comunidad menos maduros. Tiempo real y consultas agregadas más limitados. |
+| Firebase (Firestore + Auth + Storage) | Oscar Vásquez | Excelente caché offline incorporada. Crashlytics en el mismo ecosistema. Mucha documentación. | NoSQL: las agregaciones y las relaciones jerárquicas son más incómodas (desnormalizar, contadores). Las reglas de seguridad complejas son difíciles de mantener. |
+| Appwrite | Oscar Vásquez | Open source, con auth, base de datos y storage. | SDK de React Native y comunidad menos maduros. Tiempo real y consultas agregadas más limitados. |
 
 **Decisión:** Supabase. El problema central es relacional (jerarquía y sumas de votos) y exige confidencialidad por fila, y PostgreSQL con RLS lo resuelve de forma nativa.
 **Consecuencias:** Hay que implementar el modo offline nosotros mismos (ADR-06/07). La creación de usuarios con privilegios se hace en una Edge Function, nunca en la app.
