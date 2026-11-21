@@ -3,7 +3,7 @@
 
 | Dato | Detalle |
 |---|---|
-| Integrante 1 | [Nombres y apellidos completos] |
+| Integrante 1 | Oscar Julian Vásquez Borja |
 
 > **Cómo leer este documento:** los RF, RNF y supuestos describen **qué** necesita la organización y no mencionan tecnologías. Las tecnologías aparecen **solo en las ADR**: son mis propuestas para la reunión de consenso.
 > Las secciones del enunciado se citan por su título (el documento no tiene numeración): *Acceso*, *Territorio* (Organización del territorio y del personal), *Registro* (Registro de los resultados), *Confidencialidad*, *Seguimiento*, *Conectividad*, *Estabilidad*, *Restricciones*.
