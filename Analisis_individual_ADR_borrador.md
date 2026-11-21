@@ -83,8 +83,8 @@
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
 | **Expo (SDK actual) + development build / EAS Build** (Recomendada) | Oscar Vásquez | Módulos oficiales listos para cámara, ubicación, SQLite y archivos. Genera el APK con `eas build` (perfil APK) o localmente con `expo run:android`. Lottie, Reanimated y Sentry tienen plugin para Expo. | Dependencia del ecosistema Expo. EAS en la nube tiene una cola gratuita limitada (el build local es la alternativa). |
-| React Native CLI | | Control total del código nativo. | Más configuración manual de Gradle y de los permisos; más riesgo de que el APK falle cerca de la entrega. |
-| Expo Go únicamente || Arranque inmediato. | No genera APK y no admite algunas librerías nativas. **Descartada.** |
+| React Native CLI | Oscar Vásquez | Control total del código nativo. | Más configuración manual de Gradle y de los permisos; más riesgo de que el APK falle cerca de la entrega. |
+| Expo Go únicamente |Oscar Vásquez| Arranque inmediato. | No genera APK y no admite algunas librerías nativas. **Descartada.** |
 
 **Decisión:** Expo con development build. Reduce la configuración nativa y el riesgo con el APK, que cuesta 5 puntos si falta.
 **Consecuencias:** Generar un APK de prueba desde el día 1. Usar solo librerías compatibles con Expo.
@@ -97,9 +97,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Capas globales: `domain` (entidades, casos de uso, interfaces de repositorio) / `data` (repositorios, fuentes remota y local) / `presentation` (pantallas, hooks, store) / `di`** (Recomendada) | [Yo] | Es el esquema clásico y fácil de mostrar en la defensa. Las validaciones del acta (RF-12) viven en `domain`, son funciones puras que se pueden probar y funcionan offline. | Las carpetas crecen a medida que se agregan funcionalidades. |
+| **Capas globales: `domain` (entidades, casos de uso, interfaces de repositorio) / `data` (repositorios, fuentes remota y local) / `presentation` (pantallas, hooks, store) / `di`** (Recomendada) | Oscar Vásquez | Es el esquema clásico y fácil de mostrar en la defensa. Las validaciones del acta (RF-12) viven en `domain`, son funciones puras que se pueden probar y funcionan offline. | Las carpetas crecen a medida que se agregan funcionalidades. | Oscar Vásquez
 | Por funcionalidad (feature‑first), con capas dentro de cada una | | Escala mejor y agrupa por módulo (auth, actas, territorio). | Más carpetas; en un proyecto pequeño se duplica estructura. |
-| MVVM simple sin casos de uso | | Más rápido de escribir. | **No cumple** Clean Architecture. Descartada. |
+| MVVM simple sin casos de uso | Oscar Vásquez | Más rápido de escribir. | **No cumple** Clean Architecture. Descartada. |
 
 **Decisión:** Capas globales con casos de uso explícitos (`RegistrarActa`, `CorregirActa`, `AsignarVeedor`…). La UI depende de interfaces y nunca de Supabase directamente.
 **Consecuencias:** Más archivos, pero se puede cambiar el backend o la base local sin tocar la UI. Las reglas de negocio quedan aisladas y son fáciles de explicar.
