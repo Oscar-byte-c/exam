@@ -129,7 +129,7 @@
 |---|---|---|---|
 | **Alta por el superior con clave temporal → primer ingreso: verificación del correo con código OTP de 6 dígitos + cambio obligatorio de clave. Recuperación también con código OTP.** (Recomendada) | Oscar Vásquez | Coincide literalmente con el enunciado ("se lo entregue listo"). El código OTP es más fácil que un enlace para adultos mayores y no requiere *deep links* en el APK. | Requiere una Edge Function con `service_role` para crear usuarios y un indicador `debe_cambiar_clave` en el perfil. |
 | Invitación por correo (enlace mágico); el usuario define su clave | Oscar Vásquez | El creador nunca conoce ninguna clave. | El enlace debe abrir la app (deep linking) y es más confuso para personas mayores. |
-| Auto‑registro con aprobación del superior | | Menos trabajo para los coordinadores. | **Contradice** el enunciado: ya falló antes por datos incompletos. Descartada. |
+| Auto‑registro con aprobación del superior | Oscar Vásquez | Menos trabajo para los coordinadores. | **Contradice** el enunciado: ya falló antes por datos incompletos. Descartada. |
 
 **Decisión:** Clave temporal + OTP + cambio obligatorio. Resuelve las tres necesidades (correo verificado, clave privada, recuperación autónoma) con el flujo más simple para el usuario.
 **Consecuencias:** La navegación bloquea la app hasta completar el primer ingreso. Hay que configurar plantillas de correo con código en Supabase (y un SMTP propio si se supera el límite de correos del plan gratuito).
@@ -142,7 +142,7 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Tablas relacionales + Row Level Security por rol y ámbito + vistas SQL para resultados** (Recomendada) | Oscar Vásquez | La seguridad se aplica en la base de datos para cualquier cliente. Las vistas `avance_por_recinto` y `resultados_por_candidato` alimentan el panel. Una tabla `acta_historial` (vía trigger) da trazabilidad. | Hay que escribir y probar bien las políticas RLS. |
+| **Tablas relacionales + Row Level Security por rol y ámbito + vistas SQL para resultados** (Recomendada) | Oscar Vásquez | La seguridad se aplica en la base de datos para cualquier cliente. Las vistas `avance_por_recinto` y `resultados_por_candidato` alimentan el panel. Una tabla `acta_historial` (vía trigger) da trazabilidad. | Hay que escribir y probar bien las políticas RLS. | Oscar Vásquez
 | Filtrar únicamente en la app | Oscar Vásquez | Fácil. | **Inseguro**: no cumple RNF-01. Descartada. |
 | API propia (Edge Functions) para todas las operaciones | Oscar Vásquez | Control total de la lógica. | Más código y más latencia; reinventa lo que RLS ya resuelve. |
 
