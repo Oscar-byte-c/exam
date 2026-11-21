@@ -82,9 +82,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Expo (SDK actual) + development build / EAS Build** (Recomendada) | [Yo] | Módulos oficiales listos para cámara, ubicación, SQLite y archivos. Genera el APK con `eas build` (perfil APK) o localmente con `expo run:android`. Lottie, Reanimated y Sentry tienen plugin para Expo. | Dependencia del ecosistema Expo. EAS en la nube tiene una cola gratuita limitada (el build local es la alternativa). |
+| **Expo (SDK actual) + development build / EAS Build** (Recomendada) | Oscar Vásquez | Módulos oficiales listos para cámara, ubicación, SQLite y archivos. Genera el APK con `eas build` (perfil APK) o localmente con `expo run:android`. Lottie, Reanimated y Sentry tienen plugin para Expo. | Dependencia del ecosistema Expo. EAS en la nube tiene una cola gratuita limitada (el build local es la alternativa). |
 | React Native CLI | | Control total del código nativo. | Más configuración manual de Gradle y de los permisos; más riesgo de que el APK falle cerca de la entrega. |
-| Expo Go únicamente | | Arranque inmediato. | No genera APK y no admite algunas librerías nativas. **Descartada.** |
+| Expo Go únicamente || Arranque inmediato. | No genera APK y no admite algunas librerías nativas. **Descartada.** |
 
 **Decisión:** Expo con development build. Reduce la configuración nativa y el riesgo con el APK, que cuesta 5 puntos si falta.
 **Consecuencias:** Generar un APK de prueba desde el día 1. Usar solo librerías compatibles con Expo.
