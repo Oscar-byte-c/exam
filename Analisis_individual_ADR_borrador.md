@@ -112,7 +112,7 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Supabase** (PostgreSQL + Auth + Storage + Realtime + Edge Functions) (Recomendada) | [Yo] | El modelo relacional encaja con la jerarquía. Las sumas por candidato son un `SUM … GROUP BY` o una vista SQL. **Row Level Security** para la confidencialidad. Auth incluye verificación por OTP y recuperación. Realtime para el panel. | No trae persistencia offline automática (hay que construirla, ver ADR-06/07). El plan gratuito pausa el proyecto si pasa días sin uso. |
+| **Supabase** (PostgreSQL + Auth + Storage + Realtime + Edge Functions) (Recomendada) | Oscar Vásquez | El modelo relacional encaja con la jerarquía. Las sumas por candidato son un `SUM … GROUP BY` o una vista SQL. **Row Level Security** para la confidencialidad. Auth incluye verificación por OTP y recuperación. Realtime para el panel. | No trae persistencia offline automática (hay que construirla, ver ADR-06/07). El plan gratuito pausa el proyecto si pasa días sin uso. |
 | Firebase (Firestore + Auth + Storage) | | Excelente caché offline incorporada. Crashlytics en el mismo ecosistema. Mucha documentación. | NoSQL: las agregaciones y las relaciones jerárquicas son más incómodas (desnormalizar, contadores). Las reglas de seguridad complejas son difíciles de mantener. |
 | Appwrite | | Open source, con auth, base de datos y storage. | SDK de React Native y comunidad menos maduros. Tiempo real y consultas agregadas más limitados. |
 
