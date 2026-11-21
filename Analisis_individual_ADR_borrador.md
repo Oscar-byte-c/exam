@@ -158,8 +158,8 @@
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
 | **SQLite (`expo-sqlite`) + fotos en el sistema de archivos (`expo-file-system`)** (Recomendada) | Oscar Vásquez | Datos estructurados con transacciones y consultas (por ejemplo, "actas pendientes"). La base guarda solo la ruta de la foto, no la imagen. | Hay que escribir el esquema local y el mapeo. |
-| AsyncStorage | | Muy simple (clave‑valor). | Sin consultas ni transacciones; límite de tamaño en Android; no sirve para fotos. |
-| WatermelonDB | | Pensada para offline y trae un protocolo de sincronización. | Configuración nativa más compleja y curva de aprendizaje alta para el plazo disponible. |
+| AsyncStorage | Oscar Vásquez | Muy simple (clave‑valor). | Sin consultas ni transacciones; límite de tamaño en Android; no sirve para fotos. |
+| WatermelonDB | Oscar Vásquez | Pensada para offline y trae un protocolo de sincronización. | Configuración nativa más compleja y curva de aprendizaje alta para el plazo disponible. |
 
 **Decisión:** SQLite + sistema de archivos. Es robusto y estándar, y cada acta pendiente se puede consultar y mostrar con su estado.
 **Consecuencias:** Las fotos se copian a un directorio permanente de la app (no a caché) y se borran después de sincronizarse.
@@ -172,9 +172,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Cola de salida (outbox) en SQLite + ID UUID generado en el celular + `upsert` idempotente + disparo con NetInfo y reintentos con espera creciente** (Recomendada) | [Yo] | Si el envío se repite, actualiza el mismo registro en lugar de crear otro: **elimina los duplicados**. Cada acta tiene un estado claro (`pendiente → subiendo foto → enviando → sincronizada / error`). | Lógica propia que hay que probar (por ejemplo, en modo avión). |
-| Mutaciones offline persistidas de TanStack Query | | Menos código. | Las fotos y la persistencia tras un reinicio son frágiles, y se controla menos el estado de cada acta. |
-| PowerSync / ElectricSQL | | Sincronización bidireccional automática con Postgres. | Servicio adicional, configuración compleja y dependencia externa para un examen. |
+| **Cola de salida (outbox) en SQLite + ID UUID generado en el celular + `upsert` idempotente + disparo con NetInfo y reintentos con espera creciente** (Recomendada) | Oscar Vásquez | Si el envío se repite, actualiza el mismo registro en lugar de crear otro: **elimina los duplicados**. Cada acta tiene un estado claro (`pendiente → subiendo foto → enviando → sincronizada / error`). | Lógica propia que hay que probar (por ejemplo, en modo avión). |
+| Mutaciones offline persistidas de TanStack Query | Oscar Vásquez | Menos código. | Las fotos y la persistencia tras un reinicio son frágiles, y se controla menos el estado de cada acta. |
+| PowerSync / ElectricSQL | Oscar Vásquez | Sincronización bidireccional automática con Postgres. | Servicio adicional, configuración compleja y dependencia externa para un examen. |
 
 **Decisión:** Outbox + UUID + `upsert`. Ataca directamente el problema de duplicados del enunciado y es fácil de explicar.
 **Consecuencias:** Orden fijo: primero se sube la foto y después el acta con su URL. Los conflictos se resuelven con "gana la última escritura" y el historial (S-10). Los errores de sincronización se reportan al monitoreo (ADR-10).
@@ -187,9 +187,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Zustand (sesión y estado de sincronización) + TanStack Query (datos del servidor, caché, carga y error)** (Recomendada) | [Yo] | Poco código repetitivo y fácil de explicar. TanStack Query entrega `isLoading` e `isError` para la retroalimentación visual (RNF-07). Realtime solo tiene que invalidar las consultas. | Son dos librerías y hay que tener clara la frontera entre ambas. |
-| Redux Toolkit (+ RTK Query) | | Estándar maduro con herramientas de depuración. | Más código repetitivo para una app de este tamaño. |
-| Context API + useReducer | | No añade dependencias. | Provoca renders innecesarios y no trae caché, reintentos ni estados de carga. |
+| **Zustand (sesión y estado de sincronización) + TanStack Query (datos del servidor, caché, carga y error)** (Recomendada) | Oscar Vásquez | Poco código repetitivo y fácil de explicar. TanStack Query entrega `isLoading` e `isError` para la retroalimentación visual (RNF-07). Realtime solo tiene que invalidar las consultas. | Son dos librerías y hay que tener clara la frontera entre ambas. |
+| Redux Toolkit (+ RTK Query) | Oscar Vásquez | Estándar maduro con herramientas de depuración. | Más código repetitivo para una app de este tamaño. |
+| Context API + useReducer | Oscar Vásquez | No añade dependencias. | Provoca renders innecesarios y no trae caché, reintentos ni estados de carga. |
 
 **Decisión:** Zustand + TanStack Query. Separa con claridad el estado del cliente y el del servidor con poco código.
 **Consecuencias:** Los stores viven en `presentation` y llaman a casos de uso, nunca directamente a Supabase (coherencia con ADR-02).
@@ -202,9 +202,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **React Navigation (native stack + bottom tabs) con navegadores condicionales: `AuthStack`, `PrimerIngresoStack`, `VeedorTabs`, `CoordRecintoTabs`, `ProvincialTabs`** (Recomendada) | [Yo] | Un usuario no puede llegar a las pantallas de otro rol porque esas pantallas no existen en su navegador. La lógica es explícita y fácil de defender. No impone una estructura de carpetas. | Hay que tipar las rutas a mano. |
-| Expo Router (rutas por archivos) | | Rutas automáticas y deep linking incluido. | La carpeta `app/` impone su estructura y choca con las capas de Clean Architecture. Los grupos por rol son menos evidentes. |
-| Una sola pila con validación del rol en cada pantalla | | Simple al inicio. | Propensa a errores de acceso y con flujos confusos. Descartada. |
+| **React Navigation (native stack + bottom tabs) con navegadores condicionales: `AuthStack`, `PrimerIngresoStack`, `VeedorTabs`, `CoordRecintoTabs`, `ProvincialTabs`** (Recomendada) | Oscar Vásquez | Un usuario no puede llegar a las pantallas de otro rol porque esas pantallas no existen en su navegador. La lógica es explícita y fácil de defender. No impone una estructura de carpetas. | Hay que tipar las rutas a mano. |
+| Expo Router (rutas por archivos) | Oscar Vásquez | Rutas automáticas y deep linking incluido. | La carpeta `app/` impone su estructura y choca con las capas de Clean Architecture. Los grupos por rol son menos evidentes. |
+| Una sola pila con validación del rol en cada pantalla | Oscar Vásquez | Simple al inicio. | Propensa a errores de acceso y con flujos confusos. Descartada. |
 
 **Decisión:** React Navigation con navegadores por rol, elegidos según la sesión y el indicador `debe_cambiar_clave`.
 **Consecuencias:** La navegación queda en `presentation/navigation`. Las animaciones de transición usan Reanimated.
@@ -217,9 +217,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **Sentry (`@sentry/react-native` con plugin Expo)** (Recomendada) | [Yo] | Captura cierres nativos y de JavaScript, y errores manejados con `captureException` (por ejemplo, "falló la subida de la foto"). La integración con React Navigation indica la pantalla. Cuenta los usuarios afectados y registra dispositivo y versión de Android. **Guarda los eventos sin conexión y los envía después.** Plan gratuito suficiente. | Hay que subir los *source maps* para ver trazas legibles (el plugin lo automatiza en el build). |
-| Firebase Crashlytics | | Muy buena captura de cierres nativos; gratuito. | Exige un proyecto Firebase solo para esto (mezcla ecosistemas con Supabase). Los errores de JavaScript y la pantalla se ven con menos detalle. |
-| Bugsnag | | Buena estabilidad y métricas. | Plan gratuito más limitado y menos documentación para Expo. |
+| **Sentry (`@sentry/react-native` con plugin Expo)** (Recomendada) | Oscar Vásquez | Captura cierres nativos y de JavaScript, y errores manejados con `captureException` (por ejemplo, "falló la subida de la foto"). La integración con React Navigation indica la pantalla. Cuenta los usuarios afectados y registra dispositivo y versión de Android. **Guarda los eventos sin conexión y los envía después.** Plan gratuito suficiente. | Hay que subir los *source maps* para ver trazas legibles (el plugin lo automatiza en el build). |
+| Firebase Crashlytics | Oscar Vásquez | Muy buena captura de cierres nativos; gratuito. | Exige un proyecto Firebase solo para esto (mezcla ecosistemas con Supabase). Los errores de JavaScript y la pantalla se ven con menos detalle. |
+| Bugsnag | Oscar Vásquez | Buena estabilidad y métricas. | Plan gratuito más limitado y menos documentación para Expo. |
 
 **Decisión:** Sentry. Cubre literalmente cada punto de la sección *Estabilidad*, incluidos los envíos diferidos sin conexión.
 **Consecuencias:** Etiquetar los eventos con rol y recinto (sin datos sensibles como la cédula). Preparar un botón o escenario de prueba para provocar el fallo en la defensa.
@@ -232,9 +232,9 @@
 
 | Alternativa | Propuesta por | Ventajas | Desventajas o limitaciones |
 |---|---|---|---|
-| **`expo-camera` (cámara dentro de la app, sin galería) + `expo-location` con alta precisión + mapa en la revisión (`react-native-maps`)** (Recomendada) | [Yo] | Impide subir fotos viejas de la galería. Permite pantalla de vista previa, guía de encuadre y control de calidad. La ubicación y la hora se capturan junto con la foto. | `react-native-maps` en Android requiere una API key de Google Maps (alternativa: botón "Ver en Maps" con las coordenadas). |
-| `expo-image-picker` (cámara del sistema) | | Muy simple. | Menos control sobre la calidad y la vista previa; en algunos casos permite elegir de la galería. |
-| Foto opcional / ubicación opcional | | Menos fricción. | **Contradice** el enunciado ("un acta sin esa evidencia no nos sirve"). Descartada. |
+| **`expo-camera` (cámara dentro de la app, sin galería) + `expo-location` con alta precisión + mapa en la revisión (`react-native-maps`)** (Recomendada) | Oscar Vásquez | Impide subir fotos viejas de la galería. Permite pantalla de vista previa, guía de encuadre y control de calidad. La ubicación y la hora se capturan junto con la foto. | `react-native-maps` en Android requiere una API key de Google Maps (alternativa: botón "Ver en Maps" con las coordenadas). |
+| `expo-image-picker` (cámara del sistema) | Oscar Vásquez | Muy simple. | Menos control sobre la calidad y la vista previa; en algunos casos permite elegir de la galería. |
+| Foto opcional / ubicación opcional | Oscar Vásquez | Menos fricción. | **Contradice** el enunciado ("un acta sin esa evidencia no nos sirve"). Descartada. |
 
 **Decisión:** Cámara propia + GPS obligatorio + mapa al revisar.
 **Consecuencias:** Pedir los permisos con mensajes claros. Comprimir la foto (por ejemplo, ancho de ~1600 px y JPEG al 70 %) para que suba con mala señal. Mostrar una alerta si el acta se registró a más de ~500 m del recinto (S-07).
